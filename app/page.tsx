@@ -18,6 +18,23 @@ import {
    Fonts   : Poppins (titres) + Roboto (texte)
    ============================================================ */
 
+/* ---- WhatsApp : numéro du cabinet (format international, sans « + ») ---- */
+const WHATSAPP_NUMBER = "213780308963";
+const WHATSAPP_MESSAGE =
+  "Bonjour, je souhaite prendre rendez-vous. Je voudrais avoir plus d’informations concernant vos disponibilités.";
+
+const whatsappUrl = (message: string = WHATSAPP_MESSAGE) =>
+  `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+
+/* Props communes à tous les boutons « rendez-vous » */
+const waProps = (message?: string) => ({
+  href: whatsappUrl(message),
+  target: "_blank" as const,
+  rel: "noopener noreferrer",
+});
+
+const LOGO_SRC = "/images/logo-cabinet.png";
+
 const NAV = [
   { label: "Accueil", href: "#accueil" },
   { label: "Soins", href: "#soins" },
@@ -82,11 +99,11 @@ const WHY = [
 ];
 
 const GALLERY = [
-  { src: "https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&w=1200&q=80", alt: "Salle de soin du cabinet dentaire", big: true },
-  { src: "https://images.unsplash.com/photo-1598256989800-fe5f95da9787?auto=format&fit=crop&w=800&q=80", alt: "Accueil du cabinet" },
-  { src: "https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?auto=format&fit=crop&w=800&q=80", alt: "Dentiste au travail" },
-  { src: "https://images.unsplash.com/photo-1606811841689-23dfddce3e95?auto=format&fit=crop&w=800&q=80", alt: "Équipement moderne du cabinet" },
-  { src: "https://images.unsplash.com/photo-1600334129128-685c5582fd35?auto=format&fit=crop&w=800&q=80", alt: "Détail de l'espace bien-être" },
+  { src: "/images/logo.webp", alt: "Salle de soin du cabinet dentaire", big: true },
+  { src: "/images/dor.webp", alt: "Accueil du cabinet" },
+  { src: "/images/art.webp", alt: "Dentiste au travail" },
+  { src: "/images/material-2.webp", alt: "Équipement moderne du cabinet" },
+  { src: "/images/material.webp", alt: "Détail de l'espace bien-être" },
 ];
 
 /* Avis Google réels traduits en français — note 5/5 */
@@ -128,6 +145,7 @@ export default function Page() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [lightbox, setLightbox] = useState<number | null>(null);
   const [sent, setSent] = useState(false);
+  const [waLink, setWaLink] = useState(whatsappUrl());
   const [motif, setMotif] = useState<string>("");
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -141,10 +159,15 @@ export default function Page() {
 
   /* Reveal on scroll */
   useEffect(() => {
-    const els = document.querySelectorAll(".reveal");
+    const els = document.querySelectorAll(".reveal, .reveal-stagger");
     const io = new IntersectionObserver(
-      (entries) => entries.forEach((e) => e.isIntersecting && e.target.classList.add("is-visible")),
-      { threshold: 0.12 }
+      (entries) =>
+        entries.forEach((e) => {
+          if (!e.isIntersecting) return;
+          e.target.classList.add("is-visible");
+          io.unobserve(e.target);
+        }),
+      { threshold: 0.12, rootMargin: "0px 0px -6% 0px" }
     );
     els.forEach((el) => io.observe(el));
     return () => io.disconnect();
@@ -179,8 +202,7 @@ export default function Page() {
       <header className={`site-header ${scrolled || menuOpen ? "site-header--solid" : ""}`}>
         <div className="container site-header__inner">
           <a href="#accueil" className="logo" aria-label="Cabinet Dr. Bekada — Accueil">
-            <span className="logo__mark" aria-hidden="true">B</span>
-            <span className="logo__text">Dr. <em>Bekada</em></span>
+            <img className="logo__img" src="/images/logo-dz.png" alt="Cabinet dentaire Dr. Bekada" decoding="async" />
           </a>
 
           <nav className="nav-desktop" aria-label="Navigation principale">
@@ -189,7 +211,7 @@ export default function Page() {
             ))}
           </nav>
 
-          <a href="#rendez-vous" className="btn btn--primary btn--header">
+          <a {...waProps()} className="btn btn--primary btn--header">
             Prendre rendez-vous
           </a>
 
@@ -218,7 +240,7 @@ export default function Page() {
                 {item.label}
               </a>
             ))}
-            <a href="#rendez-vous" className="btn btn--primary" onClick={() => setMenuOpen(false)}>
+            <a {...waProps()} className="btn btn--primary" onClick={() => setMenuOpen(false)}>
               Prendre rendez-vous
             </a>
           </nav>
@@ -237,7 +259,7 @@ export default function Page() {
           />
           <div className="hero__overlay" aria-hidden="true" />
 
-          <div className="container hero__inner">
+          <div className="container hero__inner hero__stagger">
             <h1 className="hero__title">
               Votre sourire, avec l'attention qu'il mérite.
             </h1>
@@ -246,7 +268,7 @@ export default function Page() {
               avec le Dr. Bekada Med Oussama.
             </p>
             <div className="hero__cta">
-              <a href="#rendez-vous" className="btn btn--primary btn--lg">Prendre rendez-vous</a>
+              <a {...waProps()} className="btn btn--primary btn--lg">Prendre rendez-vous</a>
               <a href="tel:+213780308963" className="btn btn--ghost btn--lg">Appeler le cabinet</a>
             </div>
           </div>
@@ -255,7 +277,7 @@ export default function Page() {
         {/* ================= SERVICES ================= */}
         <section className="section" id="soins">
           <div className="container">
-            <header className="section__head reveal">
+            <header className="section__head reveal reveal-stagger">
               <p className="eyebrow">Nos soins</p>
               <h2>Une santé dentaire préservée, un sourire en confiance.</h2>
               <p className="section__intro">
@@ -264,7 +286,7 @@ export default function Page() {
               </p>
             </header>
 
-            <div className="services-grid reveal">
+            <div className="services-grid reveal-stagger">
               {SERVICES.map((s) => (
                 <article
                   key={s.n}
@@ -284,9 +306,11 @@ export default function Page() {
 
                   <h3 className="service-card__title">
                     <a
-                      href="#rendez-vous"
+                      {...waProps(
+                        `Bonjour, je souhaite prendre rendez-vous pour : ${s.title}. Je voudrais avoir plus d’informations concernant vos disponibilités.`
+                      )}
                       className="service-card__link"
-                      onClick={() => setMotif(s.title)}
+                      aria-label={`${s.title} — prendre rendez-vous sur WhatsApp`}
                     >
                       {s.title}
                     </a>
@@ -304,7 +328,7 @@ export default function Page() {
 
             <div className="services-cta reveal">
               <p>Une question sur un soin en particulier ?</p>
-              <a href="#rendez-vous" className="services-cta__link">
+              <a {...waProps()} className="services-cta__link">
                 Prendre rendez-vous
                 <ArrowRight size={16} strokeWidth={1.75} />
               </a>
@@ -315,9 +339,9 @@ export default function Page() {
         {/* ================= PHILOSOPHIE ================= */}
         <section className="section section--tint" id="cabinet">
           <div className="container split split--philosophy">
-            <figure className="philosophy__media reveal">
+            <figure className="philosophy__media reveal reveal--media">
               <img
-                src="https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&w=1200&q=80"
+                src="/images/seance.webp"
                 alt="Salle de traitement lumineuse et moderne du cabinet"
               />
               <span className="philosophy__accent" aria-hidden="true" />
@@ -346,12 +370,12 @@ export default function Page() {
         {/* ================= POURQUOI NOUS ================= */}
         <section className="section">
           <div className="container">
-            <header className="section__head reveal">
+            <header className="section__head reveal reveal-stagger">
               <p className="eyebrow">Le cabinet</p>
               <h2>Une attention portée à chaque détail.</h2>
             </header>
 
-            <div className="why reveal">
+            <div className="why reveal-stagger">
               {WHY.map((item, i) => (
                 <div key={item.title} className="why__col">
                   <span className="why__marker" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
@@ -366,9 +390,9 @@ export default function Page() {
         {/* ================= DOCTEUR ================= */}
         <section className="section section--doctor">
           <div className="container split split--doctor">
-            <figure className="doctor__media reveal">
+            <figure className="doctor__media reveal reveal--media">
               <img
-                src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=1000&q=80"
+                src="/images/dr-bekada.jpg"
                 alt="Portrait professionnel du Dr. Bekada Med Oussama"
               />
             </figure>
@@ -394,7 +418,7 @@ export default function Page() {
                 ))}
               </ul>
 
-              <a href="#rendez-vous" className="btn btn--primary">Prendre rendez-vous</a>
+              <a {...waProps()} className="btn btn--primary">Prendre rendez-vous</a>
             </div>
           </div>
         </section>
@@ -402,12 +426,12 @@ export default function Page() {
         {/* ================= GALERIE ================= */}
         <section className="section">
           <div className="container">
-            <header className="section__head reveal">
+            <header className="section__head reveal reveal-stagger">
               <p className="eyebrow">Le lieu</p>
               <h2>Un espace pensé pour votre confort.</h2>
             </header>
 
-            <div className="gallery reveal">
+            <div className="gallery reveal-stagger">
               {GALLERY.map((img, i) => (
                 <button
                   key={img.src}
@@ -439,7 +463,7 @@ export default function Page() {
         {/* ================= AVIS ================= */}
         <section className="section section--blue-soft" id="avis">
           <div className="container">
-            <header className="section__head reveal">
+            <header className="section__head reveal reveal-stagger">
               <p className="eyebrow eyebrow--on-blue">Avis</p>
               <h2>L'expérience de nos patients</h2>
               <p className="section__intro">
@@ -447,7 +471,7 @@ export default function Page() {
               </p>
             </header>
 
-            <div className="reviews reveal">
+            <div className="reviews reveal-stagger">
               {REVIEWS.map((r) => (
                 <blockquote key={r.name} className="review-card">
                   <p className="review-card__stars" aria-label="Note : 5 sur 5">★★★★★</p>
@@ -487,13 +511,34 @@ export default function Page() {
             <div className="appointment__form-wrap reveal">
               {sent ? (
                 <div className="appointment__success" role="status">
-                  <strong>Votre demande a bien été envoyée.</strong>
-                  <p>Le cabinet vous contactera prochainement pour confirmer votre rendez-vous.</p>
+                  <strong>Votre demande est prête dans WhatsApp.</strong>
+                  <p>Envoyez le message pré-rempli pour que le cabinet puisse confirmer votre rendez-vous.</p>
+                  <a href={waLink} target="_blank" rel="noopener noreferrer" className="btn btn--primary">
+                    Ouvrir WhatsApp
+                  </a>
                 </div>
               ) : (
                 <form
                   className="appointment__form"
-                  onSubmit={(e) => { e.preventDefault(); setSent(true); }}
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    const f = new FormData(e.currentTarget);
+                    const get = (k: string) => String(f.get(k) ?? "").trim();
+                    const date = get("date").split("-").reverse().join("/");
+                    const lines = [
+                      "Bonjour, je souhaite prendre rendez-vous.",
+                      `Nom : ${get("nom")}`,
+                      `Téléphone : ${get("telephone")}`,
+                      get("email") && `Email : ${get("email")}`,
+                      `Motif : ${get("motif")}`,
+                      date && `Date souhaitée : ${date}`,
+                      get("message") && `Message : ${get("message")}`,
+                    ].filter(Boolean);
+                    const url = whatsappUrl(lines.join("\n"));
+                    setWaLink(url);
+                    window.open(url, "_blank", "noopener,noreferrer");
+                    setSent(true);
+                  }}
                 >
                   <div className="field">
                     <label htmlFor="f-nom">Nom complet</label>
@@ -533,7 +578,7 @@ export default function Page() {
                     <label htmlFor="f-message">Message</label>
                     <textarea id="f-message" name="message" rows={4} placeholder="Précisez votre demande…" />
                   </div>
-                  <button type="submit" className="btn btn--light">Envoyer ma demande</button>
+                  <button type="submit" className="btn btn--light">Envoyer ma demande sur WhatsApp</button>
                 </form>
               )}
             </div>
@@ -569,7 +614,7 @@ export default function Page() {
             <div className="location__map reveal">
               <iframe
                 title="Carte d'accès au cabinet Dr. Bekada, Boulevard Soummam, Sidi Bel Abbès"
-                src="https://www.google.com/maps?q=Boulevard%20Soummam%2C%20Sidi%20Bel%20Abb%C3%A8s%2022002&output=embed"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3260.6656294113814!2d-0.6322747892085601!3d35.18988557263618!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd7f010041345401%3A0x3212f442e302799f!2sDentist%20Dr.%20BEKADA%20Med%20Oussama!5e0!3m2!1sen!2sdz!4v1792269628647!5m2!1sen!2sdz"
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
               />
@@ -577,12 +622,14 @@ export default function Page() {
           </div>
         </section>
 
-        {/* ================= CTA FINALE ================= */}
+        {/* ================= CTA FINALE =================  
+        </iframe> 
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3260.6656294113814!2d-0.6322747892085601!3d35.18988557263618!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd7f010041345401%3A0x3212f442e302799f!2sDentist%20Dr.%20BEKADA%20Med%20Oussama!5e0!3m2!1sen!2sdz!4v1792269628647!5m2!1sen!2sdz" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin">*/}
         <section className="final-cta">
-          <div className="container final-cta__inner reveal">
+          <div className="container final-cta__inner reveal-stagger">
             <h2>Votre sourire mérite une attention particulière.</h2>
             <p>Prenez rendez-vous avec le Dr. Bekada Med Oussama.</p>
-            <a href="#rendez-vous" className="btn btn--primary">Prendre rendez-vous</a>
+            <a {...waProps()} className="btn btn--primary">Prendre rendez-vous</a>
           </div>
         </section>
       </main>
