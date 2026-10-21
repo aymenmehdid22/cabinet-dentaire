@@ -1,15 +1,26 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
+
+/* URL publique du site : à définir dans .env (ex. NEXT_PUBLIC_SITE_URL=https://www.mon-domaine.dz).
+   Tant qu'elle n'est pas définie, aucune URL canonique n'est publiée (plutôt qu'un placeholder). */
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL;
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover", // nécessaire pour env(safe-area-inset-bottom) (CTA mobile fixe)
+  themeColor: "#4682A9",
+};
 
 export const metadata: Metadata = {
   title: "Dr. Bekada Med Oussama — Dentiste à Sidi Bel Abbès",
   description:
     "Cabinet dentaire du Dr. Bekada Med Oussama, chirurgien-dentiste à Sidi Bel Abbès : soins dentaires, esthétique du sourire, implantologie, urgences. Ouvert 24h/24. Note 4,8/5 sur Google. Prenez rendez-vous au 0780 30 89 63.",
-  alternates: { canonical: "https://[domaine].dz" },
+  ...(SITE_URL ? { metadataBase: new URL(SITE_URL), alternates: { canonical: "/" } } : {}),
   openGraph: {
     title: "Dr. Bekada Med Oussama — Dentiste à Sidi Bel Abbès",
     description: "Des soins dentaires modernes et personnalisés à Sidi Bel Abbès. Ouvert 24h/24 · 4,8/5 sur Google.",
-    url: "https://[domaine].dz",
+    ...(SITE_URL ? { url: SITE_URL } : {}),
     siteName: "Cabinet Dr. Bekada Med Oussama",
     locale: "fr_DZ",
     type: "website",
@@ -35,7 +46,7 @@ const jsonLd = {
     bestRating: "5",
     ratingCount: "55",
   },
-  url: "https://[domaine].dz",
+  ...(SITE_URL ? { url: SITE_URL } : {}),
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
