@@ -41,6 +41,22 @@ const MAPS_ITINERARY_URL =
 const MAPS_REVIEWS_URL =
   "https://www.google.com/maps/search/Dr+Bekada+Med+Oussama+dentiste+Sidi+Bel+Abb%C3%A8s";
 
+const INSTAGRAM_URL = "https://www.instagram.com/dr.bekada.med.oussama/";
+
+/* PHOTOS INSTAGRAM : déposez vos propres photos (téléchargées depuis le compte du cabinet) dans
+   public/images/instagram/ avec ces noms, ou changez les chemins. Format conseillé : portrait 4:5,
+   ~800×1000 px, en .webp ou .jpg. Ajoutez/retirez des lignes librement (6 à 10 photos idéal). */
+const INSTAGRAM_PHOTOS = [
+  "/images/instagram/1.jpg",
+  "/images/instagram/2.jpg",
+  "/images/instagram/3.jpg",
+  "/images/instagram/4.jpg",
+  "/images/instagram/5.jpg",
+  "/images/instagram/6.jpg",
+  "/images/instagram/7.jpg",
+  "/images/instagram/8.jpg",
+];
+
 const NAV = [
   { label: "Accueil", href: "#accueil" },
   { label: "Soins", href: "#soins" },
@@ -713,6 +729,53 @@ export default function Page() {
             <h2>Votre sourire mérite une attention particulière.</h2>
             <p>Prenez rendez-vous avec le Dr. Bekada Med Oussama.</p>
             <WhatsAppLink className="btn btn--primary btn--lg">Prendre rendez-vous sur WhatsApp</WhatsAppLink>
+          </div>
+        </section>
+
+        {/* ================= INSTAGRAM ================= */}
+        <section className="section insta" id="instagram">
+          <div className="container">
+            <header className="section__head insta__head reveal reveal-stagger">
+              <p className="eyebrow">Instagram</p>
+              <h2>Suivez-nous au quotidien.</h2>
+            </header>
+          </div>
+
+          {/* Panorama continu : la liste est dupliquée pour une boucle sans coupure (la 2e copie est masquée aux lecteurs d'écran) */}
+          <div className="insta__marquee reveal">
+            <div className="insta__track">
+              {[0, 1].map((copy) =>
+                INSTAGRAM_PHOTOS.map((src, i) => (
+                  <a
+                    key={`${copy}-${src}`}
+                    className="insta__card"
+                    href={INSTAGRAM_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    tabIndex={-1}
+                    aria-hidden="true"
+                  >
+                    <img
+                      src={src}
+                      alt=""
+                      width={280}
+                      height={350}
+                      loading={copy === 0 && i < 4 ? "eager" : "lazy"}
+                      decoding="async"
+                      onError={(e) => {
+                        (e.currentTarget.closest(".insta__card") as HTMLElement | null)?.style.setProperty("display", "none");
+                      }}
+                    />
+                  </a>
+                ))
+              )}
+            </div>
+          </div>
+
+          <div className="container insta__cta reveal">
+            <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" className="btn btn--secondary">
+              Suivre sur Instagram
+            </a>
           </div>
         </section>
       </main>

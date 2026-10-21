@@ -22,7 +22,7 @@
   --header-h: 76px;
   /* HAUTEUR DU HERO SUR MOBILE (≤ 900px) : modifiez uniquement cette ligne.
      clamp(minimum, hauteur idéale en % de l'écran, maximum) — ex. plus court : clamp(460px, 70svh, 560px) */
-  --hero-h-mobile: /* clamp(540px, 84svh, 680px) */100svh;
+  --hero-h-mobile: clamp(540px, 84svh, 680px);
   --section-y: clamp(68px, 9vw, 120px);
   --head-gap: clamp(36px, 5vw, 64px);
   --radius-img: 16px;
@@ -915,6 +915,58 @@ section[id] { scroll-margin-top: var(--header-h); }
 .footer__bottom p { font-size: 14px; }
 
 /* ============================================================
+   INSTAGRAM — panorama continu
+   Vitesse : --insta-speed (plus grand = plus lent) · Taille : --insta-card-w
+   ============================================================ */
+.insta { --insta-speed: 70s; --insta-card-w: clamp(170px, 21vw, 280px); --insta-gap: clamp(12px, 1.4vw, 18px); overflow: hidden; }
+.insta__head { margin-bottom: clamp(32px, 4vw, 48px); }
+
+.insta__marquee {
+  overflow: hidden;
+  /* fondu doux sur les bords */
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%);
+}
+.insta__track {
+  display: flex;
+  width: max-content;
+  animation: instaScroll var(--insta-speed) linear infinite;
+  will-change: transform;
+}
+@keyframes instaScroll {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(-50%, 0, 0); } /* -50% = une copie complète de la liste */
+}
+
+.insta__card {
+  flex: 0 0 auto;
+  width: var(--insta-card-w);
+  margin-right: var(--insta-gap); /* marge (pas gap) : les deux copies ont exactement la même largeur */
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border-radius: var(--radius-img);
+  background: var(--blue-tint);
+}
+.insta__card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.7s var(--ease);
+}
+
+.insta__cta { display: flex; justify-content: center; margin-top: clamp(32px, 4vw, 48px); }
+
+@media (hover: hover) {
+  .insta__marquee:hover .insta__track { animation-play-state: paused; }
+  .insta__card:hover img { transform: scale(1.05); }
+}
+
+@media (max-width: 640px) {
+  .insta { --insta-speed: 55s; }
+  .insta__cta .btn { width: 100%; }
+}
+
+/* ============================================================
    CTA MOBILE FIXE
    ============================================================ */
 .sticky-cta {
@@ -969,6 +1021,10 @@ section[id] { scroll-margin-top: var(--header-h); }
   .reveal, .reveal-stagger > * { opacity: 1; transform: none; transition: none; will-change: auto; }
   .reveal--media img { transform: none; transition: none; }
   .hero__bg, .hero__stagger > *, .reveal-stagger.is-visible > * { animation: none !important; }
+  /* Panorama Instagram : pas de défilement automatique, mais reste balayable à la main */
+  .insta__track { animation: none !important; }
+  .insta__marquee { overflow-x: auto; scrollbar-width: none; }
+  .insta__marquee::-webkit-scrollbar { display: none; }
   * { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
 }
 
