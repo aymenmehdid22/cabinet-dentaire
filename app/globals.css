@@ -955,6 +955,11 @@ section[id] { scroll-margin-top: var(--header-h); }
 }
 
 .insta__cta { display: flex; justify-content: center; margin-top: clamp(32px, 4vw, 48px); }
+.insta__cta .btn { gap: 10px; }
+.insta__cta .btn svg { flex-shrink: 0; transition: transform 0.35s var(--ease); }
+@media (hover: hover) {
+  .insta__cta .btn:hover svg { transform: scale(1.1) rotate(-4deg); }
+}
 
 @media (hover: hover) {
   .insta__marquee:hover .insta__track { animation-play-state: paused; }

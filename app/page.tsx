@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, type AnchorHTMLAttributes, type ReactNode } from "react";
 import { ArrowRight } from "lucide-react";
+import { FiInstagram } from "react-icons/fi"; // npm install react-icons
 
 /* ============================================================
    CABINET DR. BEKADA MED OUSSAMA — Sidi Bel Abbès
@@ -774,6 +775,7 @@ export default function Page() {
 
           <div className="container insta__cta reveal">
             <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" className="btn btn--secondary">
+              <FiInstagram size={20} aria-hidden="true" />
               Suivre sur Instagram
             </a>
           </div>
