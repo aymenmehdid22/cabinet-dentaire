@@ -1,16 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type AnchorHTMLAttributes, type ReactNode } from "react";
-import {
-  type LucideIcon,
-  Stethoscope,
-  Sparkles,
-  Anchor,
-  Ruler,
-  Crown,
-  Siren,
-  ArrowRight,
-} from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 /* ============================================================
    CABINET DR. BEKADA MED OUSSAMA — Sidi Bel Abbès
@@ -62,46 +53,48 @@ type Service = {
   n: string;
   title: string;
   desc: string;
-  Icon: LucideIcon;
+  icon: string; // chemin de votre icône PNG dans /public
   urgent?: boolean;
 };
 
+/* ICÔNES : déposez vos PNG dans  public/images/icons/  avec ces noms (ou changez les chemins ci-dessous).
+   Idéal : PNG transparent, carré, 96×96 px minimum (affiché à 48 px, net sur écrans Retina). */
 const SERVICES: Service[] = [
   {
     n: "01",
     title: "Soins dentaires",
     desc: "Prévention, diagnostic et traitement de vos dents et gencives, au quotidien.",
-    Icon: Stethoscope,
+    icon: "/images/icons/tooth.png",
   },
   {
     n: "02",
     title: "Esthétique du sourire",
     desc: "Blanchiment, facettes et corrections esthétiques pour un sourire harmonieux.",
-    Icon: Sparkles,
+    icon: "/images/icons/teeth.png",
   },
   {
     n: "03",
     title: "Implantologie",
     desc: "Remplacement de dents manquantes par des implants, avec un plan de traitement clair.",
-    Icon: Anchor,
+    icon: "/images/icons/dental-implant.png",
   },
   {
     n: "04",
     title: "Orthodontie",
     desc: "Alignement dentaire discret, pour les adolescents comme pour les adultes.",
-    Icon: Ruler,
+    icon: "/images/icons/braces.png",
   },
   {
     n: "05",
     title: "Prothèses dentaires",
     desc: "Couronnes, bridges et prothèses sur mesure, pensées pour le confort et la durabilité.",
-    Icon: Crown,
+    icon: "/images/icons/dental-crown.png",
   },
   {
     n: "06",
     title: "Urgences dentaires",
     desc: "Douleurs, traumatismes ou infection : le cabinet vous reçoit au plus vite.",
-    Icon: Siren,
+    icon: "/images/icons/ambulance.png",
     urgent: true,
   },
 ];
@@ -341,13 +334,16 @@ export default function Page() {
               {SERVICES.map((s) => (
                 <article key={s.n} className={`service-card${s.urgent ? " service-card--urgent" : ""}`}>
                   <div className="service-card__head">
-                    <span className="service-card__icon" aria-hidden="true">
-                      <s.Icon size={26} strokeWidth={1.5} />
-                    </span>
-                    <span className="service-card__meta">
-                      {s.urgent && <span className="service-card__badge">24h/24</span>}
-                      <span className="service-card__num" aria-hidden="true">{s.n}</span>
-                    </span>
+                    <img
+                      className="service-card__icon"
+                      src={s.icon}
+                      alt=""
+                      width={48}
+                      height={48}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                    {s.urgent && <span className="service-card__badge">24h/24</span>}
                   </div>
 
                   <h3 className="service-card__title">

@@ -20,6 +20,9 @@
   --container: 1240px;
   --gutter: clamp(20px, 4vw, 40px);
   --header-h: 76px;
+  /* HAUTEUR DU HERO SUR MOBILE (≤ 900px) : modifiez uniquement cette ligne.
+     clamp(minimum, hauteur idéale en % de l'écran, maximum) — ex. plus court : clamp(460px, 70svh, 560px) */
+  --hero-h-mobile: clamp(540px, 84svh, 680px);
   --section-y: clamp(68px, 9vw, 120px);
   --head-gap: clamp(36px, 5vw, 64px);
   --radius-img: 16px;
@@ -411,26 +414,29 @@ section[id] { scroll-margin-top: var(--header-h); }
   margin-bottom: 6px;
 }
 
+/* Icône PNG : affichée telle quelle — pas de pastille, pas de fond, pas de recoloration.
+   Pour la taille, modifiez width/height ici (et width/height dans page.tsx). */
 .service-card__icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 52px;
-  height: 52px;
-  border-radius: 14px;
-  color: var(--blue-deep);
-  background: var(--blue-tint);
-  transition: color 0.3s var(--ease), background 0.3s var(--ease), transform 0.4s var(--ease);
+  display: block;
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  transition: transform 0.4s var(--ease);
 }
 
-.service-card__meta { display: inline-flex; align-items: center; gap: 10px; padding-top: 6px; }
-.service-card__num {
-  font-family: var(--font-head);
-  font-size: 13px;
-  font-weight: 500;
-  letter-spacing: 0.14em;
-  color: var(--blue-mid);
+/* Filet d'accent fin en haut de la carte, qui apparaît au survol / focus */
+.service-card::before {
+  content: "";
+  position: absolute;
+  top: -1px; left: 0; right: 0;
+  height: 2px;
+  background: var(--blue-deep);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.45s var(--ease);
 }
+.service-card:focus-within::before { transform: scaleX(1); }
+
 .service-card__badge {
   display: inline-block;
   padding: 4px 10px;
@@ -480,7 +486,8 @@ section[id] { scroll-margin-top: var(--header-h); }
 
 @media (hover: hover) {
   .service-card:hover { background: #fff; }
-  .service-card:hover .service-card__icon { background: var(--blue-deep); color: #fff; transform: translateY(-3px); }
+  .service-card:hover::before { transform: scaleX(1); }
+  .service-card:hover .service-card__icon { transform: translateY(-3px); }
   .service-card:hover .service-card__cta { color: var(--ink); }
   .service-card:hover .service-card__cta svg { transform: translateX(4px); }
 }
@@ -987,8 +994,8 @@ section[id] { scroll-margin-top: var(--header-h); }
   .sticky-cta { display: block; }
 
   .hero {
-    min-height: clamp(540px, 84vh, 680px);
-    min-height: clamp(540px, 84svh, 680px);
+    min-height: 540px;                 /* repli pour les navigateurs sans svh */
+    min-height: var(--hero-h-mobile);  /* ← réglé tout en haut du fichier, dans :root */
     padding: calc(var(--header-h) + 36px) 0 56px;
   }
   /* Texte empilé sur toute l'image : voile plus uniforme pour garder le contraste */
