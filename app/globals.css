@@ -22,7 +22,7 @@
   --header-h: 76px;
   /* HAUTEUR DU HERO SUR MOBILE (≤ 900px) : modifiez uniquement cette ligne.
      clamp(minimum, hauteur idéale en % de l'écran, maximum) — ex. plus court : clamp(460px, 70svh, 560px) */
-  --hero-h-mobile: clamp(540px, 84svh, 680px);
+  --hero-h-mobile: /* clamp(540px, 84svh, 680px) */100svh;
   --section-y: clamp(68px, 9vw, 120px);
   --head-gap: clamp(36px, 5vw, 64px);
   --radius-img: 16px;
