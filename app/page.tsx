@@ -312,7 +312,7 @@ export default function Page() {
         <section className="hero" id="accueil">
           <img
             className="hero__bg"
-            src="https://images.unsplash.com/photo-1629909615184-74f495363b67?auto=format&fit=crop&w=1600&q=75"
+            src="/images/background-image.png"
             alt=""
             aria-hidden="true"
             fetchPriority="high"
@@ -398,7 +398,7 @@ export default function Page() {
           <div className="container split split--philosophy">
             <figure className="philosophy__media reveal reveal--media">
               <img
-                src="/images/seance.webp"
+                src="/images/patient.jpg"
                 alt="Salle de traitement lumineuse et moderne du cabinet"
                 loading="lazy"
                 decoding="async"

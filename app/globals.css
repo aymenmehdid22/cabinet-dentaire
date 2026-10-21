@@ -847,7 +847,7 @@ section[id] { scroll-margin-top: var(--header-h); }
    CTA FINALE — image : /public/images/cta-smile.jpg (remplaçable via --cta-bg)
    ============================================================ */
 .final-cta {
-  --cta-bg: url("/images/cta-smile.jpg");
+  --cta-bg: url("/images/cta-smile.png");
   --cta-pos: center;
   position: relative;
   padding: clamp(72px, 11vw, 130px) 0;
